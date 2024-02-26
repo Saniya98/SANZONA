@@ -1,13 +1,21 @@
-import data from "../data.js"; //importing data from data.js
 const HomeScreen = {
   //example of object with a method(function)
-  render: () => {
+  render: async () => {
     //In this function we will return an unordered list of products
-    const { products } = data; //After importing data from data.js, to access data we need this line
+    const response = await fetch('http://localhost:5000/api/products', {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (!response || !response.ok) {
+      return `<div>Error in getting data</div>`;
+    }
+    const products = await response.json();
     return `
         <ul class="products">
-        ${products.map(
-          (product) => `
+        ${products
+          .map(
+            (product) => `
         <li>
         <div class="product">
           <a href="/#/product/${product._id}">
@@ -28,7 +36,8 @@ const HomeScreen = {
       </li>
 
         `
-        ).join('\n')}
+          )
+          .join("\n")}
         `;
   },
 };
